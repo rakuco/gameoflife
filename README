@@ -1,0 +1,9 @@
+Game of Life
+------------
+(c) 2009, Raphael Kubo da Costa <kubito@gmail.com>
+
+A simple, multithreaded implementation of the Game of Life created by John Conway.
+
+This implementation was created as an assignment in a course on Operating Systems at State University of Campinas, Brazil.
+
+This program is free software and is licensed under the GNU Public License, version 3.
