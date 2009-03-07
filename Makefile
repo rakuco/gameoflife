@@ -3,7 +3,7 @@ CFLAGS=-Wall -g
 LDFLAGS=-lpthread
 
 OUTPUT=glife
-SRC=config.c main.c mem.c
+SRC=config.c game.c main.c mem.c
 
 all:
 	$(CC) $(CFLAGS) $(LDFLAGS) $(SRC) -o $(OUTPUT)
