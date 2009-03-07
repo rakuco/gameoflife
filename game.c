@@ -16,6 +16,8 @@
  */
 
 #include <assert.h>
+#include <pcre.h>
+#include <string.h>
 #include "config.h"
 #include "game.h"
 #include "mem.h"
@@ -34,10 +36,84 @@ Game* game_new(void)
   return game;
 }
 
-int game_parse_board(Game* game, GameConfig* config)
+static char* __re_get_first_match(const char* pattern, const char* subject)
 {
-  assert(game);
-  assert(config);
+  int   erroffset;
+  const char* error;
+  char* match;
+  int   ovector[30];
+  int   rc;
+  pcre* re;
+
+  re = pcre_compile(pattern, PCRE_NEWLINE_LF, &error, &erroffset, NULL);
+  if (re == NULL)
+    return NULL;
+
+  rc = pcre_exec(re, NULL, subject, strlen(subject), 0, 0, ovector, 30);
+  if (rc <= 0)
+    return NULL;
+
+  match = MEM_ALLOC_N(char, ovector[3] - ovector[2]);
+  strncpy(match, subject + ovector[2], ovector[3] - ovector[2]);
+
+  pcre_free(re);
+
+  return match;
+}
+
+static int __parse_custom_format(Game* game, FILE* board)
+{
+  char* endptr;
+  char  header_line[16];
+  char* s;
+
+  fgets(header_line, 16, board);
+  s = __re_get_first_match("^Rows:(\\d{1,10})$", header_line);
+  if (!s) {
+    free(s);
+    return 1;
+  }
+  game->rows = (size_t)strtol(s, &endptr, 10);
+  if (*endptr != '\0') {
+    free(s);
+    return 1;
+  }
+
+  fgets(header_line, 16, board);
+  s = __re_get_first_match("^Cols:(\\d{1,10})$", header_line);
+  if (!s) {
+    free(s);
+    return 1;
+  }
+  game->cols = (size_t)strtol(s, &endptr, 10);
+  if (*endptr != '\0') {
+    free(s);
+    return 1;
+  }
+
+  free(s);
 
   return 0;
+}
+
+int game_parse_board(Game* game, GameConfig* config)
+{
+  FILE* board;
+  int   exit_code;
+  long  input_file_pos;
+
+  assert(game);
+  assert(config);
+  assert(config->input_file);
+
+  board = config->input_file;
+
+  input_file_pos = ftell(board);
+  fseek(board, 0, SEEK_SET);
+
+  exit_code = __parse_custom_format(game, board);
+
+  fseek(board, input_file_pos, SEEK_SET);
+
+  return exit_code;
 }

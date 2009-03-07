@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-Wall -g
-LDFLAGS=-lpthread
+LDFLAGS=-lpcre -lpthread
 
 OUTPUT=glife
 SRC=config.c game.c main.c mem.c
