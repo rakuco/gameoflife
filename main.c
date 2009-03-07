@@ -39,5 +39,8 @@ int main(int argc, char* argv[])
     exit(1);
   }
 
+  game_config_free(config);
+  game_free(game);
+
   return 0;
 }
