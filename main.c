@@ -18,13 +18,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "config.h"
+#include "game.h"
 
 int main(int argc, char* argv[])
 {
-  GameConfig* config = game_config_new_from_cli(argc, argv);
+  GameConfig* config;
+  Game*       game;
 
+  config = game_config_new_from_cli(argc, argv);
   if (!config)
     exit(2);
+
+  game = game_new();
+  if (game_parse_board(game, config)) {
+    fprintf(stderr, "Could not read the board file.\n");
+
+    game_config_free(config);
+    game_free(game);
+
+    exit(1);
+  }
 
   return 0;
 }
