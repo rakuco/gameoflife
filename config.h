@@ -15,6 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef __CONFIG_H
+#define __CONFIG_H
+
 /**
  * Set of structures and functions to parse and manage the
  * program's configuration options.
@@ -32,3 +35,5 @@ typedef struct {
 
 void        game_config_free(GameConfig* config);
 GameConfig* game_config_new_from_cli(int argc, char* argv[]);
+
+#endif
