@@ -25,6 +25,8 @@
 void game_free(Game* game)
 {
   if (game) {
+    if (game->board)
+      free(game->board);
     free(game);
   }
 }
@@ -63,12 +65,12 @@ static char* __re_get_first_match(const char* pattern, const char* subject)
 
 static int __parse_custom_format(Game* game, FILE* board)
 {
+  char   boardline_re[20];
   char*  endptr;
   char   header_line[16];
   size_t i;
   char*  line;
   char*  s;
-  char boardline_re[50];
 
   fgets(header_line, 16, board);
   s = __re_get_first_match("^Rows:(\\d{1,10})$", header_line);
@@ -94,6 +96,12 @@ static int __parse_custom_format(Game* game, FILE* board)
     return 1;
   }
 
+  /* Allocate memory for the board */
+  if (game->board)
+    free(game->board);
+  game->board = MEM_ALLOC_N(char, game->cols * game->rows);
+
+  /* Read game->rows lines describind the board */
   sprintf(boardline_re, "^([#.]{%u})$", game->cols);
   line = MEM_ALLOC_N(char, game->cols);
 

@@ -19,6 +19,7 @@
 #define __GAME_H
 
 typedef struct {
+  char*  board;
   size_t cols;
   size_t rows;
 } Game;
