@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -g
+CFLAGS=-Wall -g -ansi -pedantic
 LDFLAGS=-lpcre -lpthread
 
 OUTPUT=glife
