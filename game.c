@@ -55,7 +55,7 @@ static char* __re_get_first_match(const char* pattern, const char* subject)
   if (rc <= 0)
     return NULL;
 
-  match = MEM_ALLOC_N(char, ovector[3] - ovector[2]);
+  match = MEM_ALLOC_N(char, ovector[3] - ovector[2] + 1);
   strncpy(match, subject + ovector[2], ovector[3] - ovector[2]);
 
   pcre_free(re);
@@ -82,6 +82,8 @@ static int __parse_custom_format(Game* game, FILE* board)
   if (*endptr != '\0') {
     free(s);
     return 1;
+  } else {
+    free(s);
   }
 
   fgets(header_line, 16, board);
@@ -94,6 +96,8 @@ static int __parse_custom_format(Game* game, FILE* board)
   if (*endptr != '\0') {
     free(s);
     return 1;
+  } else {
+    free(s);
   }
 
   /* Allocate memory for the board */
@@ -103,7 +107,7 @@ static int __parse_custom_format(Game* game, FILE* board)
 
   /* Read game->rows lines describind the board */
   sprintf(boardline_re, "^([#.]{%u})$", game->cols);
-  line = MEM_ALLOC_N(char, game->cols);
+  line = MEM_ALLOC_N(char, game->cols + 2);
   for (i = 0; i < game->rows; i++) {
     fgets(line, game->cols + 2, board);
     s = __re_get_first_match(boardline_re, line);
@@ -113,10 +117,11 @@ static int __parse_custom_format(Game* game, FILE* board)
       free(s);
       return 1;
     }
+
+    free(s);
   }
 
   free(line);
-  free(s);
 
   return 0;
 }
