@@ -20,9 +20,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-void* __memAllocate(size_t numelem, size_t elemsize)
+void *__memAllocate(size_t numelem, size_t elemsize)
 {
-  void* chunk = calloc(numelem, elemsize);
+  void *chunk = calloc(numelem, elemsize);
 
   assert(chunk != NULL);
 

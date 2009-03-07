@@ -19,13 +19,13 @@
 #define __GAME_H
 
 typedef struct {
-  char*  board;
+  char *board;
   size_t cols;
   size_t rows;
 } Game;
 
-void  game_free(Game* game);
-Game* game_new(void);
-int   game_parse_board(Game* game, GameConfig* config);
+void game_free(Game *game);
+Game *game_new(void);
+int game_parse_board(Game *game, GameConfig *config);
 
 #endif

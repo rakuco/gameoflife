@@ -22,7 +22,7 @@
 #include "mem.h"
 
 /* Error messages */
-static const char* const usage_message =
+static const char *const usage_message =
     "\n"
     "Conway's Game of Life\n"
     "Raphael Kubo da Costa, RA 072201\n"
@@ -30,10 +30,9 @@ static const char* const usage_message =
     "Usage: glife GENERATIONS INPUT_FILE\n"
     "\n"
     "  GENERATIONS is the number of generations the game should run\n"
-    "  INPUT_FILE  is a file containing an initial board state\n"
-    "\n";
+    "  INPUT_FILE  is a file containing an initial board state\n" "\n";
 
-void game_config_free(GameConfig* config)
+void game_config_free(GameConfig *config)
 {
   if (config) {
     fclose(config->input_file);
@@ -41,12 +40,12 @@ void game_config_free(GameConfig* config)
   }
 }
 
-GameConfig* game_config_new_from_cli(int argc, char* argv[])
+GameConfig *game_config_new_from_cli(int argc, char *argv[])
 {
-  char*       endptr;
-  FILE*       file;
-  GameConfig* config;
-  long        generations;
+  char *endptr;
+  FILE *file;
+  GameConfig *config;
+  long generations;
 
   if (argc != CLI_ARGC) {
     fprintf(stderr, usage_message);
@@ -66,8 +65,8 @@ GameConfig* game_config_new_from_cli(int argc, char* argv[])
   }
 
   config = MEM_ALLOC(GameConfig);
-  config->generations = (size_t)generations;
-  config->input_file  = file;
+  config->generations = (size_t) generations;
+  config->input_file = file;
 
   return config;
 }

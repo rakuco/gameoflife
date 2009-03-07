@@ -22,7 +22,7 @@
 #include "game.h"
 #include "mem.h"
 
-void game_free(Game* game)
+void game_free(Game *game)
 {
   if (game) {
     if (game->board)
@@ -31,21 +31,21 @@ void game_free(Game* game)
   }
 }
 
-Game* game_new(void)
+Game *game_new(void)
 {
-  Game* game = MEM_ALLOC(Game);
+  Game *game = MEM_ALLOC(Game);
 
   return game;
 }
 
-static char* __re_get_first_match(const char* pattern, const char* subject)
+static char *__re_get_first_match(const char *pattern, const char *subject)
 {
-  int   erroffset;
-  const char* error;
-  char* match;
-  int   ovector[30];
-  int   rc;
-  pcre* re;
+  int erroffset;
+  const char *error;
+  char *match;
+  int ovector[30];
+  int rc;
+  pcre *re;
 
   re = pcre_compile(pattern, PCRE_NEWLINE_LF, &error, &erroffset, NULL);
   if (re == NULL)
@@ -63,14 +63,14 @@ static char* __re_get_first_match(const char* pattern, const char* subject)
   return match;
 }
 
-static int __parse_custom_format(Game* game, FILE* board)
+static int __parse_custom_format(Game *game, FILE * board)
 {
-  char   boardline_re[20];
-  char*  endptr;
-  char   header_line[16];
+  char boardline_re[20];
+  char *endptr;
+  char header_line[16];
   size_t i;
-  char*  line;
-  char*  s;
+  char *line;
+  char *s;
 
   fgets(header_line, 16, board);
   s = __re_get_first_match("^Rows:(\\d{1,10})$", header_line);
@@ -78,7 +78,7 @@ static int __parse_custom_format(Game* game, FILE* board)
     free(s);
     return 1;
   }
-  game->rows = (size_t)strtol(s, &endptr, 10);
+  game->rows = (size_t) strtol(s, &endptr, 10);
   if (*endptr != '\0') {
     free(s);
     return 1;
@@ -92,7 +92,7 @@ static int __parse_custom_format(Game* game, FILE* board)
     free(s);
     return 1;
   }
-  game->cols = (size_t)strtol(s, &endptr, 10);
+  game->cols = (size_t) strtol(s, &endptr, 10);
   if (*endptr != '\0') {
     free(s);
     return 1;
@@ -126,11 +126,11 @@ static int __parse_custom_format(Game* game, FILE* board)
   return 0;
 }
 
-int game_parse_board(Game* game, GameConfig* config)
+int game_parse_board(Game *game, GameConfig *config)
 {
-  FILE* board;
-  int   exit_code;
-  long  input_file_pos;
+  FILE *board;
+  int exit_code;
+  long input_file_pos;
 
   assert(game);
   assert(config);

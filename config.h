@@ -29,11 +29,11 @@
 #define CLI_ARGC 3
 
 typedef struct {
-  size_t      generations;
-  FILE*       input_file;
+  size_t generations;
+  FILE *input_file;
 } GameConfig;
 
-void        game_config_free(GameConfig* config);
-GameConfig* game_config_new_from_cli(int argc, char* argv[]);
+void game_config_free(GameConfig *config);
+GameConfig *game_config_new_from_cli(int argc, char *argv[]);
 
 #endif

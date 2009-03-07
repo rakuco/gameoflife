@@ -40,6 +40,6 @@
  * @param numelem The number of the elements in the array.
  * @param elemsize The size of each element.
  */
-void* __memAllocate(size_t numelem, size_t elemsize);
+void *__memAllocate(size_t numelem, size_t elemsize);
 
 #endif

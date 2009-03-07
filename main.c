@@ -20,10 +20,10 @@
 #include "config.h"
 #include "game.h"
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-  GameConfig* config;
-  Game*       game;
+  GameConfig *config;
+  Game *game;
 
   config = game_config_new_from_cli(argc, argv);
   if (!config)
