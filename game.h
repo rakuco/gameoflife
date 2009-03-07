@@ -19,6 +19,8 @@
 #define __GAME_H
 
 typedef struct {
+  size_t cols;
+  size_t rows;
 } Game;
 
 void  game_free(Game* game);
