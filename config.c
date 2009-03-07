@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "config.h"
+#include "mem.h"
 
 /* Error messages */
 static const char* const usage_message =
@@ -64,12 +65,7 @@ GameConfig* game_config_new_from_cli(int argc, char* argv[])
     return NULL;
   }
 
-  config = (GameConfig*)malloc(sizeof(GameConfig));
-  if (!config) {
-    fprintf(stderr, "Memory allocation error while creating a GameConfig structure");
-    return NULL;
-  }
-
+  config = MEM_ALLOC(GameConfig);
   config->generations = (size_t)generations;
   config->input_file  = file;
 
