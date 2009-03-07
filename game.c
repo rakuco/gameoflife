@@ -63,9 +63,12 @@ static char* __re_get_first_match(const char* pattern, const char* subject)
 
 static int __parse_custom_format(Game* game, FILE* board)
 {
-  char* endptr;
-  char  header_line[16];
-  char* s;
+  char*  endptr;
+  char   header_line[16];
+  size_t i;
+  char*  line;
+  char*  s;
+  char boardline_re[50];
 
   fgets(header_line, 16, board);
   s = __re_get_first_match("^Rows:(\\d{1,10})$", header_line);
@@ -91,6 +94,17 @@ static int __parse_custom_format(Game* game, FILE* board)
     return 1;
   }
 
+  sprintf(boardline_re, "^([#.]{%u})$", game->cols);
+  line = MEM_ALLOC_N(char, game->cols);
+
+  for (i = 0; i < game->rows; i++) {
+    fgets(line, game->cols + 2, board);
+    s = __re_get_first_match(boardline_re, line);
+    if (s)
+      printf("%s\n", s);
+  }
+
+  free(line);
   free(s);
 
   return 0;
