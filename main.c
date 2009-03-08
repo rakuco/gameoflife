@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
 {
   GameConfig *config;
   Game *game;
+  int generation;
 
   config = game_config_new_from_cli(argc, argv);
   if (!config)
@@ -39,7 +40,9 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  game_print_board(game);
+  for (generation = 0; generation < game_config_get_generations(config); generation++) {
+    game_print_board(game);
+  }
 
   game_config_free(config);
   game_free(game);
