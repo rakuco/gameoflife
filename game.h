@@ -32,5 +32,6 @@ int game_parse_board(Game *game, GameConfig *config);
 void game_print_board(Game *game);
 void game_set_alive(Game *game, size_t row, size_t col);
 void game_set_dead(Game *game, size_t row, size_t col);
+void game_tick(Game *game);
 
 #endif

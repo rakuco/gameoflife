@@ -17,6 +17,7 @@
 
 #include <assert.h>
 #include <pcre.h>
+#include <pthread.h>
 #include <string.h>
 #include "config.h"
 #include "game.h"
@@ -293,4 +294,13 @@ void game_set_dead(Game *game, size_t row, size_t col)
   assert(col < game->cols);
 
   game->board[row * game->cols + col] = 0;
+}
+
+/**
+ * Advances the cell board to a new generation (causes a 'tick').
+ *
+ * @param game Pointer to a Game structure.
+ */
+void game_tick(Game *game)
+{
 }
