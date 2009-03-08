@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 {
   GameConfig *config;
   Game *game;
-  int generation;
+  size_t generation;
 
   config = game_config_new_from_cli(argc, argv);
   if (!config)
