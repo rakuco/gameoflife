@@ -60,6 +60,15 @@ static char *__re_get_first_match(const char *pattern, const char *subject)
   return match;
 }
 
+/**
+ * Parse the custom board file format.
+ *
+ * @param game  Pointer to a Game structure.
+ * @param board The file to read.
+ *
+ * @retval 0 The file was parsed correctly.
+ * @retval 1 The file could not be parsed.
+ */
 static int __parse_custom_format(Game *game, FILE * board)
 {
   char boardline_re[20];
@@ -69,6 +78,7 @@ static int __parse_custom_format(Game *game, FILE * board)
   char *line;
   char *s;
 
+  /* First line - "Rows:NNN" */
   fgets(header_line, 16, board);
   s = __re_get_first_match("^Rows:(\\d{1,10})$", header_line);
   if (!s) {
@@ -83,6 +93,7 @@ static int __parse_custom_format(Game *game, FILE * board)
     free(s);
   }
 
+  /* Second line - "Cols:NNN" */
   fgets(header_line, 16, board);
   s = __re_get_first_match("^Cols:(\\d{1,10})$", header_line);
   if (!s) {
@@ -102,7 +113,7 @@ static int __parse_custom_format(Game *game, FILE * board)
     free(game->board);
   game->board = MEM_ALLOC_N(char, game->cols * game->rows);
 
-  /* Read game->rows lines describind the board */
+  /* Read game->rows lines describing the board */
   sprintf(boardline_re, "^([#.]{%u})$", game->cols);
   line = MEM_ALLOC_N(char, game->cols + 2);
   for (i = 0; i < game->rows; i++) {
