@@ -25,7 +25,12 @@ typedef struct {
 } Game;
 
 void game_free(Game *game);
+int game_is_alive(Game *game, size_t row, size_t col);
+int game_is_alive(Game *game, size_t row, size_t col);
 Game *game_new(void);
 int game_parse_board(Game *game, GameConfig *config);
+void game_print_board(Game *game);
+void game_set_alive(Game *game, size_t row, size_t col);
+void game_set_dead(Game *game, size_t row, size_t col);
 
 #endif

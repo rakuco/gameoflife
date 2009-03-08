@@ -31,6 +31,21 @@ void game_free(Game *game)
   }
 }
 
+int game_is_alive(Game *game, size_t row, size_t col)
+{
+  assert(game);
+  assert(game->board);
+  assert(row < game->rows);
+  assert(col < game->cols);
+
+  return game->board[row * game->cols + col] == 1;
+}
+
+int game_is_dead(Game *game, size_t row, size_t col)
+{
+  return !game_is_alive(game, row, col);
+}
+
 Game *game_new(void)
 {
   Game *game = MEM_ALLOC(Game);
@@ -68,7 +83,7 @@ static int __parse_custom_format(Game *game, FILE * board)
   char boardline_re[20];
   char *endptr;
   char header_line[16];
-  size_t i;
+  size_t i, j;
   char *line;
   char *s;
 
@@ -110,12 +125,19 @@ static int __parse_custom_format(Game *game, FILE * board)
   line = MEM_ALLOC_N(char, game->cols + 2);
   for (i = 0; i < game->rows; i++) {
     fgets(line, game->cols + 2, board);
-    s = __re_get_first_match(boardline_re, line);
 
+    s = __re_get_first_match(boardline_re, line);
     if (!s) {
       free(line);
       free(s);
       return 1;
+    }
+
+    for (j = 0; j < game->cols; j++) {
+      if (s[j] == '#')
+        game_set_alive(game, i, j);
+      else
+        game_set_dead(game, i, j);
     }
 
     free(s);
@@ -146,4 +168,39 @@ int game_parse_board(Game *game, GameConfig *config)
   fseek(board, input_file_pos, SEEK_SET);
 
   return exit_code;
+}
+
+void game_print_board(Game *game)
+{
+  size_t col, row;
+
+  assert(game);
+  assert(game->board);
+
+  for (row = 0; row < game->rows; row++) {
+    for (col = 0; col < game->cols; col++) {
+      printf("%c", game_is_alive(game, row, col) ? '#' : '.');
+    }
+    printf("\n");
+  }
+}
+
+void game_set_alive(Game *game, size_t row, size_t col)
+{
+  assert(game);
+  assert(game->board);
+  assert(row < game->rows);
+  assert(col < game->cols);
+
+  game->board[row * game->cols + col] = 1;
+}
+
+void game_set_dead(Game *game, size_t row, size_t col)
+{
+  assert(game);
+  assert(game->board);
+  assert(row < game->rows);
+  assert(col < game->cols);
+
+  game->board[row * game->cols + col] = 0;
 }
