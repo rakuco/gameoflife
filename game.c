@@ -22,6 +22,19 @@
 #include "game.h"
 #include "mem.h"
 
+/**
+ * Returns the string matched by the first subgroup pattern in a regular expression.
+ *
+ * This function is useful if the regular expression is used primarily to find
+ * one single pattern inside the given string.
+ * Please note that it's up to the programmer to specify a regular expression with
+ * at least one subgroup.
+ *
+ * @param pattern The regular expression to use.
+ * @param subject The string to be searched.
+ *
+ * @return The matched string.
+ */
 static char *__re_get_first_match(const char *pattern, const char *subject)
 {
   int erroffset;
