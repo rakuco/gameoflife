@@ -199,6 +199,10 @@ Game *game_new(void)
 {
   Game *game = MEM_ALLOC(Game);
 
+  game->board = NULL;
+  game->cols = 0;
+  game->rows = 0;
+
   return game;
 }
 
