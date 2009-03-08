@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -38,6 +39,13 @@ void game_config_free(GameConfig *config)
     fclose(config->input_file);
     free(config);
   }
+}
+
+size_t game_config_get_generations(GameConfig *config)
+{
+  assert(config);
+
+  return config->generations;
 }
 
 GameConfig *game_config_new_from_cli(int argc, char *argv[])

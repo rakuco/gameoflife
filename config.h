@@ -34,6 +34,7 @@ typedef struct {
 } GameConfig;
 
 void game_config_free(GameConfig *config);
+size_t game_config_get_generations(GameConfig *config);
 GameConfig *game_config_new_from_cli(int argc, char *argv[]);
 
 #endif
