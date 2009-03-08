@@ -40,7 +40,13 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  for (generation = 0; generation < game_config_get_generations(config); generation++) {
+  printf("Seed board:\n");
+  game_print_board(game);
+
+  for (generation = 1; generation <= game_config_get_generations(config); generation++) {
+    game_tick(game);
+
+    printf("\nGeneration %u:\n", generation);
     game_print_board(game);
   }
 
