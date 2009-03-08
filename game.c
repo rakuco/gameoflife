@@ -173,6 +173,9 @@ int game_is_alive(Game *game, size_t row, size_t col)
   assert(row < game->rows);
   assert(col < game->cols);
 
+  if ((row < 0) || (col < 0))
+    return 0;
+
   return game->board[row * game->cols + col] == 1;
 }
 
