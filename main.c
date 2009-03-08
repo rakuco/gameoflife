@@ -39,6 +39,8 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
+  game_print_board(game);
+
   game_config_free(config);
   game_free(game);
 
