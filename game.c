@@ -22,37 +22,6 @@
 #include "game.h"
 #include "mem.h"
 
-void game_free(Game *game)
-{
-  if (game) {
-    if (game->board)
-      free(game->board);
-    free(game);
-  }
-}
-
-int game_is_alive(Game *game, size_t row, size_t col)
-{
-  assert(game);
-  assert(game->board);
-  assert(row < game->rows);
-  assert(col < game->cols);
-
-  return game->board[row * game->cols + col] == 1;
-}
-
-int game_is_dead(Game *game, size_t row, size_t col)
-{
-  return !game_is_alive(game, row, col);
-}
-
-Game *game_new(void)
-{
-  Game *game = MEM_ALLOC(Game);
-
-  return game;
-}
-
 static char *__re_get_first_match(const char *pattern, const char *subject)
 {
   int erroffset;
@@ -146,6 +115,37 @@ static int __parse_custom_format(Game *game, FILE * board)
   free(line);
 
   return 0;
+}
+
+void game_free(Game *game)
+{
+  if (game) {
+    if (game->board)
+      free(game->board);
+    free(game);
+  }
+}
+
+int game_is_alive(Game *game, size_t row, size_t col)
+{
+  assert(game);
+  assert(game->board);
+  assert(row < game->rows);
+  assert(col < game->cols);
+
+  return game->board[row * game->cols + col] == 1;
+}
+
+int game_is_dead(Game *game, size_t row, size_t col)
+{
+  return !game_is_alive(game, row, col);
+}
+
+Game *game_new(void)
+{
+  Game *game = MEM_ALLOC(Game);
+
+  return game;
 }
 
 int game_parse_board(Game *game, GameConfig *config)
