@@ -283,20 +283,19 @@ int game_tick(Game *game)
   char *new_board;
   int retval = 0;
   size_t slice_count;
-  size_t slice_width = 1;
   __ThreadInfo *tinfo;
   size_t tnum = 0;
 
-  slice_count = (game->cols / slice_width) + (game->cols % slice_width ? 1 : 0);
+  slice_count = (game->cols / BOARD_SLICE_WIDTH) + (game->cols % BOARD_SLICE_WIDTH ? 1 : 0);
 
   new_board = MEM_ALLOC_N(char, game->rows * game->cols);
   tinfo = MEM_ALLOC_N(__ThreadInfo, slice_count);
 
   for (tnum = 0; tnum < slice_count; tnum++) {
-    tinfo[tnum].col = tnum * slice_width;
+    tinfo[tnum].col = tnum * BOARD_SLICE_WIDTH;
     tinfo[tnum].game = game;
     tinfo[tnum].new_board = new_board;
-    tinfo[tnum].width = slice_width;
+    tinfo[tnum].width = BOARD_SLICE_WIDTH;
 
     if (pthread_create(&tinfo[tnum].tid, NULL, &__process_slice, &tinfo[tnum])) {
       fprintf(stderr, "Error while creating thread %u. Waiting for other threads to finish.\n", tnum);

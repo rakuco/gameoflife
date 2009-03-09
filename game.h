@@ -21,6 +21,8 @@
 #include <pthread.h>
 #include <stdlib.h>
 
+#define BOARD_SLICE_WIDTH 1
+
 /**
  * The main structure used by the game.
  */
