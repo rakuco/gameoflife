@@ -354,32 +354,33 @@ int game_tick(Game *game)
 {
   char *new_board;
   int retval = 0;
-  size_t slice;
   pthread_t *threads;
   ThreadInfo *tinfo;
   size_t tnum = 0;
+  size_t slice_count;
   size_t slice_width = 1;
 
+  slice_count = (game->cols / slice_width) + (game->cols % slice_width ? 1 : 0);
+
   new_board = MEM_ALLOC_N(char, game->rows * game->cols);
+  threads = MEM_ALLOC_N(pthread_t, slice_count);
+  tinfo = MEM_ALLOC_N(ThreadInfo, slice_count);
 
-  threads = MEM_ALLOC_N(pthread_t, (game->cols / slice_width) + (game->cols % slice_width ? 1 : 0));
-  tinfo = MEM_ALLOC_N(ThreadInfo, game->cols);
-
-  for (slice = 0; slice < game->cols; slice += slice_width, tnum++) {
+  for (tnum = 0; tnum < slice_count; tnum++) {
     tinfo[tnum].game = game;
     tinfo[tnum].new_board = new_board;
-    tinfo[tnum].pos = slice;
+    tinfo[tnum].pos = tnum * slice_width;
     tinfo[tnum].width = slice_width;
 
     if (pthread_create(&threads[tnum], NULL, &__process_slice, &tinfo[tnum])) {
-      fprintf(stderr, "Error while creating thread %u. Waiting for other threads to finish.\n", slice);
+      fprintf(stderr, "Error while creating thread %u. Waiting for other threads to finish.\n", tnum);
 
       retval = 1;
       break;
     }
   }
 
-  for (tnum = 0; tnum < game->cols; tnum++) {
+  for (tnum = 0; tnum < slice_count; tnum++) {
     if (pthread_join(threads[tnum], NULL))
       retval = 1;
   }
