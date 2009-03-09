@@ -11,6 +11,10 @@ This implementation was created as an assignment in a course on Operating System
 
 This program is free software and is licensed under the GNU Public License, version 3.
 
+It should be noted that by no means is this program intented to be full-featured and fast - it was the first assignment in the course and its intent was not to provide an efficient implementation of the Game of Life. Actually, my main intentions while writing this program were both to provide easy to read, quality code and practise the usage of pthreads.
+
+For a full-featured, very nice Game of Life implementation, check Golly, an open-source, cross-platform GoL implementation at <http://golly.sourceforge.net>.
+
 --------
 Building
 --------
