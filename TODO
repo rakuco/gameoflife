@@ -1,0 +1,9 @@
+This is a TODO for future versions of the program (which probably will not be released as this was only a 'warm-up' assignment) or for people interested in working on the code.
+
++ Improve the display of error messages (they should be more descriptive).
+
++ Improve error handling: what if the user creates a board bigger or smaller than specified?
+
++ Check the number limits in the code: what would happen if the user created a board with dimensions bigger than UINT_MAX? How about the file parsing code?
+
++ Read other board file formats (eg BMP and some usual formats for representing Game of Life boards).
