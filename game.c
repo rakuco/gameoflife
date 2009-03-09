@@ -298,9 +298,9 @@ void game_set_dead(Game *game, size_t row, size_t col)
 }
 
 typedef struct {
+  size_t col;
   Game *game;
   char *new_board;
-  size_t pos;
   size_t width;
 } ThreadInfo;
 
@@ -310,7 +310,7 @@ static void *__process_slice(void *t)
   size_t row, col;
   ThreadInfo *tinfo = (ThreadInfo*)t;
 
-  for (col = tinfo->pos; (col < (tinfo->pos + tinfo->width)) && (col < tinfo->game->cols); col++) {
+  for (col = tinfo->col; (col < (tinfo->col + tinfo->width)) && (col < tinfo->game->cols); col++) {
     for (row = 0; row < tinfo->game->rows; row++) {
       live_count = 0;
 
@@ -367,9 +367,9 @@ int game_tick(Game *game)
   tinfo = MEM_ALLOC_N(ThreadInfo, slice_count);
 
   for (tnum = 0; tnum < slice_count; tnum++) {
+    tinfo[tnum].col = tnum * slice_width;
     tinfo[tnum].game = game;
     tinfo[tnum].new_board = new_board;
-    tinfo[tnum].pos = tnum * slice_width;
     tinfo[tnum].width = slice_width;
 
     if (pthread_create(&threads[tnum], NULL, &__process_slice, &tinfo[tnum])) {
