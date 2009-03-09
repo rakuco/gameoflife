@@ -48,3 +48,12 @@ The first line must consist of the string 'Rows:' followed by a positive integer
 The second line must consist of the string 'Cols:' followed by a positive integer C that will be used as the number of columns in the board.
 
 The following R lines of the file must consist of C characters that should be either '.' or '#', the former representing a dead cell and the latter representing a living cell.
+
+--------------
+Implementation
+--------------
+The implementation chosen for this program is not very efficient.
+
+The board is divided into "vertical stripes", with R cells of height and BOARD_SLICE_WIDTH cells of width, being R the number of rows in the board and BOARD_SLICE_WIDTH a constant defined in game.h. By default, BOARD_SLICE_WIDTH is set to 1, which actually means 1 thread per board column.
+
+Each of these stripes is manipulated by a different thread, which linearly checks each cell's neighbour to see if the current cell should be dead or alive in the next generation.
