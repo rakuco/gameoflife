@@ -301,6 +301,7 @@ typedef struct {
   size_t col;
   Game *game;
   char *new_board;
+  pthread_t tid;
   size_t width;
 } ThreadInfo;
 
@@ -356,14 +357,12 @@ int game_tick(Game *game)
   int retval = 0;
   size_t slice_count;
   size_t slice_width = 1;
-  pthread_t *threads;
   ThreadInfo *tinfo;
   size_t tnum = 0;
 
   slice_count = (game->cols / slice_width) + (game->cols % slice_width ? 1 : 0);
 
   new_board = MEM_ALLOC_N(char, game->rows * game->cols);
-  threads = MEM_ALLOC_N(pthread_t, slice_count);
   tinfo = MEM_ALLOC_N(ThreadInfo, slice_count);
 
   for (tnum = 0; tnum < slice_count; tnum++) {
@@ -372,14 +371,14 @@ int game_tick(Game *game)
     tinfo[tnum].new_board = new_board;
     tinfo[tnum].width = slice_width;
 
-    if (pthread_create(&threads[tnum], NULL, &__process_slice, &tinfo[tnum])) {
+    if (pthread_create(&tinfo[tnum].tid, NULL, &__process_slice, &tinfo[tnum])) {
       fprintf(stderr, "Error while creating thread %u. Waiting for other threads to finish.\n", tnum);
       retval = 1;
     }
   }
 
   for (tnum = 0; tnum < slice_count; tnum++) {
-    if (pthread_join(threads[tnum], NULL))
+    if (pthread_join(tinfo[tnum].tid, NULL))
       retval = 1;
   }
 
@@ -387,7 +386,6 @@ int game_tick(Game *game)
   game->board = new_board;
 
   free(tinfo);
-  free(threads);
 
   return retval;
 }
