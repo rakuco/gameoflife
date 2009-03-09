@@ -297,11 +297,95 @@ void game_set_dead(Game *game, size_t row, size_t col)
   game->board[row * game->cols + col] = 0;
 }
 
+typedef struct {
+  Game *game;
+  char *new_board;
+  size_t pos;
+  size_t width;
+} ThreadInfo;
+
+static void *__process_slice(void *t)
+{
+  char live_count;
+  size_t row, col;
+  ThreadInfo *tinfo = (ThreadInfo*)t;
+
+  for (col = tinfo->pos; (col < (tinfo->pos + tinfo->width)) && (col < tinfo->game->cols); col++) {
+    for (row = 0; row < tinfo->game->rows; row++) {
+      live_count = 0;
+
+      if (row > 0) {
+        if (col > 0)
+          if (game_is_alive(tinfo->game, row-1, col-1)) live_count++;
+
+        if (game_is_alive(tinfo->game, row-1, col)) live_count++;
+        if (game_is_alive(tinfo->game, row-1, col+1)) live_count++;
+      }
+      if (col > 0) {
+        if (game_is_alive(tinfo->game, row, col-1))   live_count++;
+        if (game_is_alive(tinfo->game, row+1, col-1)) live_count++;
+      }
+
+      if (game_is_alive(tinfo->game, row, col+1))   live_count++;
+      if (game_is_alive(tinfo->game, row+1, col))   live_count++;
+      if (game_is_alive(tinfo->game, row+1, col+1)) live_count++;
+
+      if ((live_count < 2) || (live_count > 3))
+        tinfo->new_board[row * tinfo->game->cols + col] = 0;
+      else if (live_count == 3)
+        tinfo->new_board[row * tinfo->game->cols + col] = 1;
+      else
+        tinfo->new_board[row * tinfo->game->cols + col] = tinfo->game->board[row * tinfo->game->cols + col];
+    }
+  }
+
+  return NULL;
+}
+
 /**
  * Advances the cell board to a new generation (causes a 'tick').
  *
  * @param game Pointer to a Game structure.
  */
-void game_tick(Game *game)
+int game_tick(Game *game)
 {
+  char *new_board;
+  int retval = 0;
+  size_t slice;
+  pthread_t *threads;
+  ThreadInfo *tinfo;
+  size_t tnum = 0;
+  size_t slice_width = 1;
+
+  new_board = MEM_ALLOC_N(char, game->rows * game->cols);
+
+  threads = MEM_ALLOC_N(pthread_t, (game->cols / slice_width) + (game->cols % slice_width ? 1 : 0));
+  tinfo = MEM_ALLOC_N(ThreadInfo, game->cols);
+
+  for (slice = 0; slice < game->cols; slice += slice_width, tnum++) {
+    tinfo[tnum].game = game;
+    tinfo[tnum].new_board = new_board;
+    tinfo[tnum].pos = slice;
+    tinfo[tnum].width = slice_width;
+
+    if (pthread_create(&threads[tnum], NULL, &__process_slice, &tinfo[tnum])) {
+      fprintf(stderr, "Error while creating thread %u. Waiting for other threads to finish.\n", slice);
+
+      retval = 1;
+      break;
+    }
+  }
+
+  for (tnum = 0; tnum < game->cols; tnum++) {
+    if (pthread_join(threads[tnum], NULL))
+      retval = 1;
+  }
+
+  free(game->board);
+  game->board = new_board;
+
+  free(tinfo);
+  free(threads);
+
+  return retval;
 }
