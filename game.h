@@ -64,7 +64,7 @@ int game_is_alive(Game *game, size_t row, size_t col);
  * @retval 0 The position is in an alive state.
  * @retval 1 The position is in a dead state.
  */
-int game_is_alive(Game *game, size_t row, size_t col);
+int game_is_dead(Game *game, size_t row, size_t col);
 
 /**
  * Allocates memory for a new Game structure.
