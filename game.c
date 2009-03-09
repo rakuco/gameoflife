@@ -185,11 +185,6 @@ static void *__process_slice(void *t)
   return NULL;
 }
 
-/**
- * Frees memory allocated to a Game structure.
- *
- * @param game Pointer to be freed.
- */
 void game_free(Game *game)
 {
   if (game) {
@@ -199,16 +194,6 @@ void game_free(Game *game)
   }
 }
 
-/**
- * Checks whether a given board position is in an alive state.
- *
- * @param game Pointer to a Game structure.
- * @param row  The row number.
- * @param col  The column number.
- *
- * @retval 0 The position is in a dead state.
- * @retval 1 The position is in an alive state.
- */
 int game_is_alive(Game *game, size_t row, size_t col)
 {
   assert(game);
@@ -220,26 +205,11 @@ int game_is_alive(Game *game, size_t row, size_t col)
   return game->board[row * game->cols + col] == 1;
 }
 
-/**
- * Checks whether a given board position is in a dead state.
- *
- * @param game Pointer to a Game structure.
- * @param row  The row number.
- * @param col  The column number.
- *
- * @retval 0 The position is in an alive state.
- * @retval 1 The position is in a dead state.
- */
 int game_is_dead(Game *game, size_t row, size_t col)
 {
   return !game_is_alive(game, row, col);
 }
 
-/**
- * Allocates memory for a new Game structure.
- *
- * @return A new Game pointer.
- */
 Game *game_new(void)
 {
   Game *game = MEM_ALLOC(Game);
@@ -251,19 +221,6 @@ Game *game_new(void)
   return game;
 }
 
-/**
- * Parses a board file into an internal representation.
- *
- * Currently, this function only parses the custom file format
- * used by the program, but it should be trivial to add other
- * file formats.
- *
- * @param game Pointer to a Game structure.
- * @param config Pointer to a GameConfig structure.
- *
- * @retval 0 The board file was parsed correctly.
- * @retval 1 The board file could not be parsed.
- */
 int game_parse_board(Game *game, GameConfig *config)
 {
   FILE *board;
@@ -286,11 +243,6 @@ int game_parse_board(Game *game, GameConfig *config)
   return exit_code;
 }
 
-/**
- * Prints the current state of the board.
- *
- * @param game Pointer to a Game structure.
- */
 void game_print_board(Game *game)
 {
   size_t col, row;
@@ -306,13 +258,6 @@ void game_print_board(Game *game)
   }
 }
 
-/**
- * Sets a specific position in the board to an alive state.
- *
- * @param game Pointer to a Game structure.
- * @param row  The row number.
- * @param col  The column number.
- */
 void game_set_alive(Game *game, size_t row, size_t col)
 {
   assert(game);
@@ -323,13 +268,6 @@ void game_set_alive(Game *game, size_t row, size_t col)
   game->board[row * game->cols + col] = 1;
 }
 
-/**
- * Sets a specific position in the board to a dead state.
- *
- * @param game Pointer to a Game structure.
- * @param row  The row number.
- * @param col  The column number.
- */
 void game_set_dead(Game *game, size_t row, size_t col)
 {
   assert(game);
@@ -340,14 +278,6 @@ void game_set_dead(Game *game, size_t row, size_t col)
   game->board[row * game->cols + col] = 0;
 }
 
-/**
- * Advances the cell board to a new generation (causes a 'tick').
- *
- * @param game Pointer to a Game structure.
- *
- * @retval 0 The tick has happened successfully.
- * @retval 1 The tick could not happen correctly.
- */
 int game_tick(Game *game)
 {
   char *new_board;
