@@ -354,11 +354,11 @@ int game_tick(Game *game)
 {
   char *new_board;
   int retval = 0;
+  size_t slice_count;
+  size_t slice_width = 1;
   pthread_t *threads;
   ThreadInfo *tinfo;
   size_t tnum = 0;
-  size_t slice_count;
-  size_t slice_width = 1;
 
   slice_count = (game->cols / slice_width) + (game->cols % slice_width ? 1 : 0);
 
@@ -374,9 +374,7 @@ int game_tick(Game *game)
 
     if (pthread_create(&threads[tnum], NULL, &__process_slice, &tinfo[tnum])) {
       fprintf(stderr, "Error while creating thread %u. Waiting for other threads to finish.\n", tnum);
-
       retval = 1;
-      break;
     }
   }
 
