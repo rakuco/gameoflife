@@ -143,6 +143,49 @@ static int __parse_custom_format(Game *game, FILE * board)
 }
 
 /**
+ * Analyzes a particular part of the game board and update its state to the next generation.
+ *
+ * @param t Pointer to a __ThreadInfo structure.
+ */
+static void *__process_slice(void *t)
+{
+  char live_count;
+  size_t row, col;
+  __ThreadInfo *tinfo = (__ThreadInfo*)t;
+
+  for (col = tinfo->col; (col < (tinfo->col + tinfo->width)) && (col < tinfo->game->cols); col++) {
+    for (row = 0; row < tinfo->game->rows; row++) {
+      live_count = 0;
+
+      /* Count the living neighbour cells */
+      if (game_is_alive(tinfo->game, row, col+1))   live_count++;
+      if (game_is_alive(tinfo->game, row+1, col))   live_count++;
+      if (game_is_alive(tinfo->game, row+1, col+1)) live_count++;
+      if (row > 0) {
+        if (game_is_alive(tinfo->game, row-1, col))   live_count++;
+        if (game_is_alive(tinfo->game, row-1, col+1)) live_count++;
+      }
+      if (col > 0) {
+        if (game_is_alive(tinfo->game, row, col-1))   live_count++;
+        if (game_is_alive(tinfo->game, row+1, col-1)) live_count++;
+      }
+      if ((row > 0) && (col > 0))
+        if (game_is_alive(tinfo->game, row-1, col-1)) live_count++;
+
+      /* Apply the game's rules to the current cell */
+      if ((live_count < 2) || (live_count > 3))
+        tinfo->new_board[row * tinfo->game->cols + col] = 0;
+      else if (live_count == 3)
+        tinfo->new_board[row * tinfo->game->cols + col] = 1;
+      else
+        tinfo->new_board[row * tinfo->game->cols + col] = tinfo->game->board[row * tinfo->game->cols + col];
+    }
+  }
+
+  return NULL;
+}
+
+/**
  * Frees memory allocated to a Game structure.
  *
  * @param game Pointer to be freed.
@@ -295,44 +338,6 @@ void game_set_dead(Game *game, size_t row, size_t col)
   assert(col < game->cols);
 
   game->board[row * game->cols + col] = 0;
-}
-
-static void *__process_slice(void *t)
-{
-  char live_count;
-  size_t row, col;
-  __ThreadInfo *tinfo = (__ThreadInfo*)t;
-
-  for (col = tinfo->col; (col < (tinfo->col + tinfo->width)) && (col < tinfo->game->cols); col++) {
-    for (row = 0; row < tinfo->game->rows; row++) {
-      live_count = 0;
-
-      /* Count the living neighbour cells */
-      if (game_is_alive(tinfo->game, row, col+1))   live_count++;
-      if (game_is_alive(tinfo->game, row+1, col))   live_count++;
-      if (game_is_alive(tinfo->game, row+1, col+1)) live_count++;
-      if (row > 0) {
-        if (game_is_alive(tinfo->game, row-1, col))   live_count++;
-        if (game_is_alive(tinfo->game, row-1, col+1)) live_count++;
-      }
-      if (col > 0) {
-        if (game_is_alive(tinfo->game, row, col-1))   live_count++;
-        if (game_is_alive(tinfo->game, row+1, col-1)) live_count++;
-      }
-      if ((row > 0) && (col > 0))
-        if (game_is_alive(tinfo->game, row-1, col-1)) live_count++;
-
-      /* Apply the game's rules to the current cell */
-      if ((live_count < 2) || (live_count > 3))
-        tinfo->new_board[row * tinfo->game->cols + col] = 0;
-      else if (live_count == 3)
-        tinfo->new_board[row * tinfo->game->cols + col] = 1;
-      else
-        tinfo->new_board[row * tinfo->game->cols + col] = tinfo->game->board[row * tinfo->game->cols + col];
-    }
-  }
-
-  return NULL;
 }
 
 /**
