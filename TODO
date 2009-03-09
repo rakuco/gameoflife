@@ -7,3 +7,5 @@ This is a TODO for future versions of the program (which probably will not be re
 + Check the number limits in the code: what would happen if the user created a board with dimensions bigger than UINT_MAX? How about the file parsing code?
 
 + Read other board file formats (eg BMP and some usual formats for representing Game of Life boards).
+
++ Split the code in game.c into more specific files (maybe create some game_board_* functions).
