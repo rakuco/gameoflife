@@ -21,18 +21,24 @@
 #include <pthread.h>
 #include <stdlib.h>
 
+/**
+ * The main structure used by the game.
+ */
 typedef struct {
-  char *board;
-  size_t cols;
-  size_t rows;
+  char *board; /**< The board as an array of 0's and 1's. */
+  size_t cols; /**< The number of columns. */
+  size_t rows; /**< The number of rows. */
 } Game;
 
+/**
+ * Internal structure with information needed by a tick thread.
+ */
 typedef struct {
-  size_t col;
-  Game *game;
-  char *new_board;
-  pthread_t tid;
-  size_t width;
+  size_t col;      /**< The board column to start in. */
+  Game *game;      /**< The Game being used. */
+  char *new_board; /**< The new board that will be worked on. */
+  pthread_t tid;   /**< A thread id. */
+  size_t width;    /**< The width of the stripe of the board being used. */
 } __ThreadInfo;
 
 /**
