@@ -346,6 +346,9 @@ static void *__process_slice(void *t)
  * Advances the cell board to a new generation (causes a 'tick').
  *
  * @param game Pointer to a Game structure.
+ *
+ * @retval 0 The tick has happened successfully.
+ * @retval 1 The tick could not happen correctly.
  */
 int game_tick(Game *game)
 {
