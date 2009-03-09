@@ -18,11 +18,22 @@
 #ifndef __GAME_H
 #define __GAME_H
 
+#include <pthread.h>
+#include <stdlib.h>
+
 typedef struct {
   char *board;
   size_t cols;
   size_t rows;
 } Game;
+
+typedef struct {
+  size_t col;
+  Game *game;
+  char *new_board;
+  pthread_t tid;
+  size_t width;
+} __ThreadInfo;
 
 void game_free(Game *game);
 int game_is_alive(Game *game, size_t row, size_t col);

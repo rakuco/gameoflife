@@ -297,19 +297,11 @@ void game_set_dead(Game *game, size_t row, size_t col)
   game->board[row * game->cols + col] = 0;
 }
 
-typedef struct {
-  size_t col;
-  Game *game;
-  char *new_board;
-  pthread_t tid;
-  size_t width;
-} ThreadInfo;
-
 static void *__process_slice(void *t)
 {
   char live_count;
   size_t row, col;
-  ThreadInfo *tinfo = (ThreadInfo*)t;
+  __ThreadInfo *tinfo = (__ThreadInfo*)t;
 
   for (col = tinfo->col; (col < (tinfo->col + tinfo->width)) && (col < tinfo->game->cols); col++) {
     for (row = 0; row < tinfo->game->rows; row++) {
@@ -357,13 +349,13 @@ int game_tick(Game *game)
   int retval = 0;
   size_t slice_count;
   size_t slice_width = 1;
-  ThreadInfo *tinfo;
+  __ThreadInfo *tinfo;
   size_t tnum = 0;
 
   slice_count = (game->cols / slice_width) + (game->cols % slice_width ? 1 : 0);
 
   new_board = MEM_ALLOC_N(char, game->rows * game->cols);
-  tinfo = MEM_ALLOC_N(ThreadInfo, slice_count);
+  tinfo = MEM_ALLOC_N(__ThreadInfo, slice_count);
 
   for (tnum = 0; tnum < slice_count; tnum++) {
     tinfo[tnum].col = tnum * slice_width;
