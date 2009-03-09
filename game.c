@@ -315,22 +315,22 @@ static void *__process_slice(void *t)
     for (row = 0; row < tinfo->game->rows; row++) {
       live_count = 0;
 
+      /* Count the living neighbour cells */
+      if (game_is_alive(tinfo->game, row, col+1))   live_count++;
+      if (game_is_alive(tinfo->game, row+1, col))   live_count++;
+      if (game_is_alive(tinfo->game, row+1, col+1)) live_count++;
       if (row > 0) {
-        if (col > 0)
-          if (game_is_alive(tinfo->game, row-1, col-1)) live_count++;
-
-        if (game_is_alive(tinfo->game, row-1, col)) live_count++;
+        if (game_is_alive(tinfo->game, row-1, col))   live_count++;
         if (game_is_alive(tinfo->game, row-1, col+1)) live_count++;
       }
       if (col > 0) {
         if (game_is_alive(tinfo->game, row, col-1))   live_count++;
         if (game_is_alive(tinfo->game, row+1, col-1)) live_count++;
       }
+      if ((row > 0) && (col > 0))
+        if (game_is_alive(tinfo->game, row-1, col-1)) live_count++;
 
-      if (game_is_alive(tinfo->game, row, col+1))   live_count++;
-      if (game_is_alive(tinfo->game, row+1, col))   live_count++;
-      if (game_is_alive(tinfo->game, row+1, col+1)) live_count++;
-
+      /* Apply the game's rules to the current cell */
       if ((live_count < 2) || (live_count > 3))
         tinfo->new_board[row * tinfo->game->cols + col] = 0;
       else if (live_count == 3)
@@ -382,6 +382,7 @@ int game_tick(Game *game)
       retval = 1;
   }
 
+  /* Make game use the new board and drop the old one */
   free(game->board);
   game->board = new_board;
 
