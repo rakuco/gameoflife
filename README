@@ -1,9 +1,46 @@
 Game of Life
-------------
+============
 (c) 2009, Raphael Kubo da Costa <kubito@gmail.com>
 
-A simple, multithreaded implementation of the Game of Life created by John Conway.
+------------
+Introduction
+------------
+A simple, multithreaded implementation of the Game of Life created by John Conway. The code is written in ANSI C (-ansi and -pedantic return no warnings).
 
 This implementation was created as an assignment in a course on Operating Systems at State University of Campinas, Brazil.
 
 This program is free software and is licensed under the GNU Public License, version 3.
+
+--------
+Building
+--------
+The program has only been (not so extensively) tested on Linux, under a 2.6+ kernel with NPTL. Feel free to try to run it under a BSD, for example.
+
+Requirements
+  The program only requires the GNU libc. In fact, other standard C libraries might work, as long as they provide a POSIX threads implementation.
+  If you intend to generate the documentation for the project, you need doxygen and graphviz.
+
+Compilation
+  To compile the program you just need to run 'make'.
+  To generate the documentation, you need to run 'make doc'.
+
+-----
+Usage
+-----
+The program must be invoked from command line and has two required parameters: the number of generations for which to run and the file containing the seed board (the initial board state).
+
+Example:
+  glife 3 board.txt
+
+This should read the file board.txt, use it as the initial board state and then run the program for 3 generations.
+
+-----------------
+Board file format
+-----------------
+Currently, this implementation only supports its own very simple file format.
+
+The first line must consist of the string 'Rows:' followed by a positive integer R that will be used as the number of rows in the board.
+
+The second line must consist of the string 'Cols:' followed by a positive integer C that will be used as the number of columns in the board.
+
+The following R lines of the file must consist of C characters that should be either '.' or '#', the former representing a dead cell and the latter representing a living cell.
