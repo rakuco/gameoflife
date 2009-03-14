@@ -5,7 +5,7 @@ Game of Life
 ------------
 Introduction
 ------------
-A simple, multithreaded implementation of the Game of Life created by John Conway. The code is written in ANSI C (-ansi and -pedantic return no warnings).
+A simple, multithreaded implementation of the Game of Life created by John Conway. The code is written in ANSI C (-ansi and -pedantic return no warnings). The most up-to-date version get be obtained from <http://github.cmo/rakuco/gameoflife>.
 
 This implementation was created as an assignment in a course on Operating Systems at State University of Campinas, Brazil.
 
@@ -49,11 +49,17 @@ The second line must consist of the string 'Cols:' followed by a positive intege
 
 The following R lines of the file must consist of C characters that should be either '.' or '#', the former representing a dead cell and the latter representing a living cell.
 
---------------
-Implementation
---------------
-The implementation chosen for this program is not very efficient.
+-------------------------
+Implementation discussion
+-------------------------
+This was the first time I used PCRE in C. Using PCRE to validate two lines sounds a little overkill, but it saved some ugly loops and state checking. Besides, the board lines are also read using a regular expression.
 
-The board is divided into "vertical stripes", with R cells of height and BOARD_SLICE_WIDTH cells of width, being R the number of rows in the board and BOARD_SLICE_WIDTH a constant defined in game.h. By default, BOARD_SLICE_WIDTH is set to 1, which actually means 1 thread per board column.
+The code has been run through Valgrind, and no memory leaks were found.
+
+I hope the whole code is simple enough to be understood in a few minutes. The command line is parsed into a GameConfig structure, then the board file is opened and read into a Game structure, which stores every cell in an array of 0's and 1's, being 0 the dead state and 1 the living state. Then for G times, being G the number of generations specified in the command line, the board 'ticks' (it advances one generation) and the new board state is printed out.
+
+As for the algorithm for the 'tick': the implementation chosen for this program is not very efficient, as this was not the main purpose of this assignment.
+
+The board is divided into "vertical stripes", with R cells of height and BOARD_SLICE_WIDTH cells of width, being R the number of rows in the board and BOARD_SLICE_WIDTH a constant defined in game.h. By default, BOARD_SLICE_WIDTH is set to 1, which actually means 1 thread per board column. In fact, 1 is almost always a bad value: if the board is wide, the number of threads being run concurrently might make the program slower than a sequential version. A more efficient algorithm should choose the value of BOARD_SLICE_WIDTH dinamically based on the width of the board.
 
 Each of these stripes is manipulated by a different thread, which linearly checks each cell's neighbour to see if the current cell should be dead or alive in the next generation.
