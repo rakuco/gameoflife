@@ -21,7 +21,7 @@ Building
 The program has only been (not so extensively) tested on Linux, under a 2.6+ kernel with NPTL. Feel free to try to run it under a BSD, for example.
 
 Requirements
-  The program only requires the GNU libc. In fact, other standard C libraries might work, as long as they provide a POSIX threads implementation.
+  The program only requires the GNU libc and PCRE (which can be obtained from www.pcre.org). In fact, other standard C libraries might work, as long as they provide a POSIX threads implementation.
   If you intend to generate the documentation for the project, you need doxygen and graphviz.
 
 Compilation
